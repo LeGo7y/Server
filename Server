@@ -1,0 +1,30 @@
+import socket
+import sys
+import select
+
+sock = socket.socket()
+sock.bind(('192.168.1.2', 7777))
+sock.listen(12)
+conn, addr = sock.accept()
+
+
+while True:
+    data = conn.recv(128)
+    if not data:
+        command = conn.recv(4)
+    else:
+        print(data)
+        break
+
+clients = []
+server = socket.socket()
+sockets = [sys.stdin, server] + clients
+
+
+while True:
+    ins = select.select(sockets, [], [], 0)
+    for sock in ins:
+        if sock is select.stdin:
+            sys.stdin
+        elif sock is server:
+            print("hello world")
