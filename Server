@@ -3,28 +3,27 @@ import sys
 import select
 
 sock = socket.socket()
-sock.bind(('192.168.1.2', 7777))
+sock.bind(('10.171.132.63', 54678))
 sock.listen(12)
 conn, addr = sock.accept()
-
+clients = []
 
 while True:
     data = conn.recv(128)
     if not data:
-        command = conn.recv(4)
+        print('Информация отсутствует')
+        conn.close()
     else:
-        print(data)
+        print(addr)
+
         break
 
-clients = []
-server = socket.socket()
-sockets = [sys.stdin, server] + clients
 
-
+sockets = [sys.stdin, sock] + clients
 while True:
     ins = select.select(sockets, [], [], 0)
     for sock in ins:
         if sock is select.stdin:
-            sys.stdin
-        elif sock is server:
-            print("hello world")
+            sys.stdin()
+        elif sock is sock:
+            sock.close()
